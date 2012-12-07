@@ -1,0 +1,6 @@
+development:
+  :app_id: "415414498509059"
+  :app_secret: "f4110c9aec8e60c6d41e8dd3ae9e8bda"
+production:
+  :app_id: "251113255000241"
+  :app_secret: "a5e17653dcca282d7e6cfb78a1a4054f"

@@ -1,0 +1,24 @@
+development:
+  sessions:
+    default:
+      hosts:
+        - 127.0.0.1:27017
+      database: socialtv_development
+      pool_size: 25
+test:
+  host: localhost
+  database: faceoff_test
+
+# set these environment variables on your prod server
+production:
+#  host: faceofflive-GNLEE6I6-data-0.azva.dotcloud.net
+#  database: admin
+#  uri: mongodb://root:mDSwWcthl5dtXf433VRU@faceoff-GNLEE6I6-data-0.dotcloud.com:36819
+#  uri: mongodb://root:M0M0uDJa4pr3s6DN0uTe@faceofflive-GNLEE6I6-data-0.azva.dotcloud.net:39424
+#  port: 39424
+#  username: root
+#  password: mDSwWcthl5dtXf433VRU
+#  password: M0M0uDJa4pr3s6DN0uTe
+#  uri: <%= ENV['MONGOLAB_URI'] %>
+  uri: <%= ENV['MONGOHQ_URL'] %>
+ 

@@ -1,0 +1,6 @@
+development:
+  :dev_key: "AI39si47cHSF5Qk9pdzmr1huvmvYByobawukSrYqFHX9-zfFXnlj5nlzBrrVOZLUqwPnYE0RyBkXfk_72NCvLjtjjWu5xVlPNg"
+  :client_id: "143104219467.apps.googleusercontent.com"
+  :client_secret: "1dXrkklxH7xL2GcYqs72pvaP"
+production:
+  :dev_key: "AI39si47cHSF5Qk9pdzmr1huvmvYByobawukSrYqFHX9-zfFXnlj5nlzBrrVOZLUqwPnYE0RyBkXfk_72NCvLjtjjWu5xVlPNg"

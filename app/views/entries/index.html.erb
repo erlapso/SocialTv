@@ -1,0 +1,9 @@
+ <% if current_user %>
+   <% if @enough %>
+     <%= render :partial => "user" %>
+   <% else %>
+     <%= render :partial => "not_enough" %>
+   <% end %>
+ <% else %>
+    <%= render :partial => "logged_out" %>
+  <% end %>

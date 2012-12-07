@@ -1,0 +1,11 @@
+<div id="main">
+  <% content_for :after_body do %>
+    <%= render :partial => "youtube_api" %>
+
+  <% end %>
+   <div id="player"></div>
+</div>
+<script>
+  var current_vid = "<%= @current %>";
+  var next_vid = "<%= @next %>";
+</script>
