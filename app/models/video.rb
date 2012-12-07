@@ -9,6 +9,9 @@ class Video
   field :views, :type => Integer, :default => 0
   field :hidden, :type => Boolean, :default => false
   field :category, :type => String, :default => "none"
+  field :duration, :type => Integer
+  field :title, :type => String
+  field :description, :type => String
 
   has_many :entries
 
@@ -46,9 +49,9 @@ class Video
       v = ex_video.first
     end
     entry = Entry.find(entry_id)
-    entry.vid = v.id
+    entry.vid = vid
     entry.video = v
-    if v.hidden = true
+    if v.hidden == true
       entry.hidden = true
       entry.hidden_reason = "embed"
     end
@@ -81,6 +84,9 @@ class Video
     if info.access_control["embed"] == "denied"
       self.hidden = true
     end
+    self.title = info.title
+    self.description = info.description
+    self.duration = info.duration
     self.category = info.categories.first.label
     self.save
   end

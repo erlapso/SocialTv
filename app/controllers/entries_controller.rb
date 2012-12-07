@@ -7,7 +7,9 @@ class EntriesController < ApplicationController
       if entries.count > 2
         @enough = true
         @current = entries.first.video.vid
+        @entry = entries.first
         @next = entries.second.video.vid
+        @entry_n = entries.second
       else
         @enough = false
       end
@@ -21,7 +23,9 @@ class EntriesController < ApplicationController
       viewed.save
       entries = current_user.entries.where(:viewed => false, :hidden => false)
       @current = entries.first.video.vid
+      @entry = entries.first
       @next = entries.second.video.vid
+      @entry_n = entries.second
     end
     respond_to do |format|
       format.js { render :layout => false }

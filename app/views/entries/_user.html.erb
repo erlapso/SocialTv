@@ -1,9 +1,14 @@
 <div id="main">
   <% content_for :after_body do %>
     <%= render :partial => "youtube_api" %>
-
   <% end %>
-   <div id="player"></div>
+  <% content_for :navbar_left do %>
+    <%= render :partial => "current_info" %>
+  <% end %>
+  <% content_for :navbar_right do %>
+    <%= render :partial => "next_info" %>
+  <% end %>
+  <div id="player"></div>
 </div>
 <script>
   var current_vid = "<%= @current %>";

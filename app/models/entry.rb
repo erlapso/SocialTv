@@ -9,8 +9,9 @@ class Entry
   field :viewed, :type => Boolean, :default => false
   field :vid, :type => String
   field :created_time, :type => DateTime
-  field :title, :type => String
   field :message, :type => String
+
+  field :source, :type => String
 
   field :hidden, :type => Boolean, :default => false
   field :hidden_reason, :type => String

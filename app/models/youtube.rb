@@ -11,8 +11,6 @@ class Youtube
     user_v = user.new_subscription_videos
     videos = user_v.videos
     videos
-    end
-
   end
 
 end

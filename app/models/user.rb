@@ -42,7 +42,7 @@ class User
         v = Entry.new
         v.author = entry["from"]["name"]
         v.author_image = "https://graph.facebook.com/#{entry["from"]["id"]}/picture"
-        v.created_time = Date.parse(entry["created_time"].to_s)
+        v.created_time = DateTime.parse(entry["created_time"].to_s)
         v.message = entry["message"] if entry["message"]
         v.fb_likes = entry["likes"] if entry["likes"]
         v.fb_comments = entry["comments"] if entry["comments"]
@@ -61,6 +61,7 @@ class User
     e = Entry.new
     e.author = video.author.name
     e.message = video.description
+    e.created_time = DateTime.parse(video.published_at.to_s)
     e.save
     Video.yt_assign(video, e.id)
     final = e.id
@@ -113,7 +114,9 @@ class User
     if user.yt_token
       stream = Youtube.get(id)
       stream.each do |video|
-        user.yt_extract(video)
+        entry = user.yt_extract(video)
+        e = Entry.find(entry)
+        user.entries.push(e)
       end
     end 
   end
@@ -140,7 +143,7 @@ class User
       user.yt_token = auth["credentials"]["token"]
     end
     user.save
-    user.solidify unless id
+    user.solidify
     user.id
   end
 
