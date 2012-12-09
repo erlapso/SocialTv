@@ -1,0 +1,6 @@
+<ul class="nav pull-left" id="current_info">
+  <li><p class="navbar-text"></p></li>
+  <li class="active"><a href="#"><img src="/images/<%= @entry.source %>_icon.png"><%= @entry.author %></a></li>
+  <li id="navdata_0"><a href="#"><%= @entry.video.title %></a></li>
+  <%= nav_data(@data).html_safe %>
+</ul>

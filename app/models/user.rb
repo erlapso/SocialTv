@@ -4,10 +4,12 @@ class User
   field :name, :type => String
   field :email, :type => String
   field :image, :type => String
+  field :source, :type => String
 
   #FACEBOOK
   field :facebook_uid, :type => Integer
-  field :fb_token, :type => String
+  field :facebook_token, :type => String
+  field :facebook_token_expires_at, :type => Integer
   field :fb_since, :type => Integer
   field :fb_until, :type => Integer
   field :fb_image, :type => String
@@ -20,19 +22,20 @@ class User
   field :yt_email, :type => String
   field :yt_location, :type => String, :default => "EN"
   field :yt_channel_title, :type => String
-  field :yt_token, :type => String 
+  field :youtube_token, :type => String
+  field :youtube_token_expires_at, :type => Integer 
   field :yt_nickname, :type => String
   field :yt_image, :type => String
 
-  #settings
-  field :hide_music, :type => Boolean, :default => true
+  #SETTINGS
+  field :option, :type => Hash, :default => {"hide_music_video" => true, "hide_watched_videos" => true, "show_comments" => false}
 
   has_many :entries   
 
   def dev
     self.entries.each do |c|
-    c.viewed = false
-    c.save
+      c.viewed = false
+      c.save
     end
   end
 
@@ -47,6 +50,7 @@ class User
         v.fb_likes = entry["likes"] if entry["likes"]
         v.fb_comments = entry["comments"] if entry["comments"]
         v.fb_shares = entry["shares"] if entry["shares"]
+        v.source = "facebook"
         v.save
         Video.assign(entry["link"], v.id)
         final = v.id
@@ -62,6 +66,7 @@ class User
     e.author = video.author.name
     e.message = video.description
     e.created_time = DateTime.parse(video.published_at.to_s)
+    e.source = "youtube"
     e.save
     Video.yt_assign(video, e.id)
     final = e.id
@@ -93,32 +98,36 @@ class User
 
   def self.fetch_feed(id, options=nil, auto=true, check=true)
     user = User.find(id)
-    if user.fb_token
+    if user.facebook_token
       stream = Facebook.get(id, "home", options, auto)
       stream.each do |entry|
-        if entry["link"] && user.entries.where(:"video.url" => entry["url"]).count == 0
+        vid = Video.vid(["link"])
+        if entry["link"] && vid && user.entries.where(:vid => vid).count == 0
           e = user.fb_extract(entry)
           if e
             entry = Entry.find(e)
-            if user.hide_music == true && entry.video.category
-              entry.hidden = true
-              entry.hidden_reason = "music"
-              entry.save
-            end
             user.entries.push(entry)
           end
         end
       end
       user.fb_check_valid_entries if check
     end
-    if user.yt_token
-      stream = Youtube.get(id)
-      stream.each do |video|
-        entry = user.yt_extract(video)
-        e = Entry.find(entry)
-        user.entries.push(e)
+    if user.youtube_token
+      begin
+        stream = Youtube.get(id)
+        stream.each do |video|
+          vid = video.video_id.split(":").last
+          if user.entries.where(:vid => vid).count == 0
+            entry = user.yt_extract(video)
+            e = Entry.find(entry)
+            user.entries.push(e)
+          end
+        end
+      rescue OAuth2::Error
+        redirect = "youtube"
       end
-    end 
+    end
+    return redirect if redirect 
   end
 
   def self.create_with_omniauth(auth, id=nil)
@@ -133,18 +142,19 @@ class User
       user.fb_last_name = auth["info"]["last_name"]
       user.fb_email = auth["info"]["email"]
       user.fb_image = auth["info"]["image"]
-      user.fb_token = auth["credentials"]["token"]
+      user.facebook_token = auth["credentials"]["token"]
+      user.facebook_token_expires_at = auth["credentials"]["expires_at"]
     end
     if auth["provider"] == "youtube"
       user.youtube_uid = auth["uid"]
       user.yt_nickname = auth["info"]["nickname"]
       user.yt_email = auth["info"]["email"]
       user.yt_channel_title = auth["info"]["channel_title"]
-      user.yt_token = auth["credentials"]["token"]
+      user.youtube_token = auth["credentials"]["token"]
+      user.youtube_token_expires_at = auth["credentials"]["expires_at"]
     end
     user.save
     user.solidify
     user.id
   end
-
 end

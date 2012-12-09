@@ -5,3 +5,4 @@ end
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :youtube, YT[:client_id], YT[:client_secret], {:access_type => 'online', :approval_prompt => ''}
 end
+PROVIDERS = ["youtube", "facebook"]

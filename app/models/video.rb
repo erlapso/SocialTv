@@ -5,13 +5,16 @@ class Video
   field :vid, :type => String
   field :type, :type => String, :default => "youtube"
   field :likes, :type => Integer, :default => 0
-  field :unlikes, :type => Integer, :default => 0
+  field :dislikes, :type => Integer, :default => 0
   field :views, :type => Integer, :default => 0
   field :hidden, :type => Boolean, :default => false
   field :category, :type => String, :default => "none"
   field :duration, :type => Integer
   field :title, :type => String
   field :description, :type => String
+  field :comment_count, :type => Integer, :default => 0
+  field :comments, :type => Array
+  field :published_at, :type => DateTime
 
   has_many :entries
 
@@ -70,15 +73,25 @@ class Video
     end
   end
 
-  def stats(info=nil)
+  def self.vid(url)
+    vid = url.split("?")
+    if vid[1]
+      vid_t = vid[1].split("&")
+      vid_s = vid_t[0].gsub("v=", "")
+    else
+      vid_s = nil
+    end
+    vid_s
+  end
+
+  def stats(info=nil, comments=false)
     if not info
-    #here we have to call the youtube api and retrieve the stats
       yt = YouTubeIt::Client.new(:dev_key => YT[:dev_key]) 
       info = yt.video_by(self.vid)
     end
     if info.rating
       self.likes = info.rating.likes
-      self.unlikes = info.rating.dislikes
+      self.dislikes = info.rating.dislikes
     end
     self.views = info.view_count
     if info.access_control["embed"] == "denied"
@@ -88,6 +101,17 @@ class Video
     self.description = info.description
     self.duration = info.duration
     self.category = info.categories.first.label
+    self.comment_count = info.comment_count
+    self.published_at = DateTime.parse(info.published_at.to_s)
+    if self.comment_count > 100000000000000000
+      yt = YouTubeIt::Client.new(:dev_key => YT[:dev_key]) if not yt
+      cc = yt.comments(self.vid)
+      comments = []
+      cc.each do |comment|
+        comments.push(comment)
+      end
+      self.comments = comments
+    end
     self.save
   end
 

@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 
   def create
-    #raise request.env['omniauth.auth'].to_yaml
+  #raise request.env['omniauth.auth'].to_yaml
     auth = request.env['omniauth.auth']
     user = User.where(:"#{params[:provider]}_uid" => auth["uid"]) #check if we have this network for this user
     if user.count == 0
@@ -12,15 +12,37 @@ class SessionsController < ApplicationController
       end
     else
       user_id = user.first.id
-    end
+      fin = refresh_user(auth)   
+   end
     session[:user_id] = user_id
-    User.fetch_feed(user_id)
-    redirect_to root_path, :notice => "Welcome #{user_id}"
+    if not fin
+      redirect_to root_path
+    else
+      redirect_to fin
+    end
   end
 
   def destroy
     session[:user_id] = nil
     redirect_to root_path, :notice => "Logged out"
+  end
+
+  def refresh_user(auth)
+    url = nil
+    tok = "#{auth["provider"]}_token".to_sym
+    refresh_user = User.where(:"#{auth["provider"]}_uid" => auth["uid"]).first
+    refresh_user[tok] = auth["credentials"]["token"]
+    refresh_user.save
+    PROVIDERS.each do |provider|
+      if not provider == auth["provider"]
+        if refresh_user["#{provider}_token"]
+          if refresh_user["#{provider}_token_expires_at"] > (DateTime.now-3.hours).to_i
+            url = "/auth/#{provider}/"
+          end
+        end
+      end
+    end
+    url
   end
 
 end

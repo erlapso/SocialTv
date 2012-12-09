@@ -2,7 +2,7 @@ class Facebook
 
   def self.get(id, object, fields=nil, auto=false)
     user = User.find(id)
-    token = user.fb_token
+    token = user.facebook_token
     if auto == true
       fields = []
       if user.fb_until

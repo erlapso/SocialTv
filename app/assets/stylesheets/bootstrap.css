@@ -5902,6 +5902,11 @@ button.close {
     padding-right: 10px;
   }
 }
+
+  .modalSettings {
+ /*here the pointer mouseover */
+  }
+
 @media (min-width: 980px) {
   .nav-collapse.collapse {
     height: auto !important;

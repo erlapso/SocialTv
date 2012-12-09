@@ -7,10 +7,14 @@
   // 3. This function creates an <iframe> (and YouTube player)
   //after the API code downloads.
   var player;
-  var stheight = window.innerHeight - 48;
-  var stwidth = window.innerWidth - 8;
+  var videoSwitch = 0;
+  var stheight = window.innerHeight - 42;
+  var stwidth = window.innerWidth;
   function onYouTubeIframeAPIReady() {
-player = new YT.Player('player', {
+  document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+  document.body.scroll = "no";  // ie only
+
+  player = new YT.Player('player', {
   height: stheight,
   width: stwidth,
   videoId: current_vid,
@@ -40,6 +44,46 @@ playerVars: {
   }
  
   function nextVideo() {
-    window.location.href = "next?next=<%= @next %>&prev=<%= @current %>";
+    window.location.href = "/?next=<%= @next.video.vid %>&prev=<%= @entry.video.vid %>";
   }
+
+  function toggleVideo() {
+    if (videoSwitch == 0) {
+      player.stopVideo();
+      videoSwitch = 1;
+    } else {
+      player.playVideo();
+      videoSwitch = 0;
+    }
+  }
+
+function showSettings() {
+  toggleVideo();
+  setTimeout(function(){$("#modalSettings").modal('show');}, 300);
+  }
+
+function hideSettings() {
+  $("#modalSettings").modal('hide');
+  }
+  var seconds = <%= @entry.video.duration.to_i %>;
+  function timeInWords() {
+    if (seconds == <%= @entry.video.duration %>) {
+      $("#video_title").fadeIn(1000);
+    }
+    secs = "<b id='time_in_words'>In "+seconds+" seconds </b>";
+    $('#time_in_words').replaceWith(secs);
+    if (videoSwitch == 0) {
+      seconds = seconds - 1;
+    }
+  }
+  setInterval(function(){timeInWords();}, 1000);
+
+  function applySettings(opt) {
+    $.post("/settings.js", { option: opt }, function(data) {
+     name = "#setting_" + option + "_" + data["value"];
+     $(name).addClass("hide");
+     other = "#setting_" + option + "_" + data["opposite"];
+     $(other).removeClass("hide");
+        }
+        );}
 </script>

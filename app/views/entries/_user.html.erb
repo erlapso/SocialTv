@@ -6,11 +6,69 @@
     <%= render :partial => "current_info" %>
   <% end %>
   <% content_for :navbar_right do %>
+    <% if current_user.option["show_comments"] == true %>
+      <%= render :partial => "comments" %>
+    <% end %>
     <%= render :partial => "next_info" %>
   <% end %>
+  <%= render :partial => "settings" %>
   <div id="player"></div>
 </div>
 <script>
-  var current_vid = "<%= @current %>";
-  var next_vid = "<%= @next %>";
+  var current_vid = "<%= @entry.video.vid %>";
+  var next_vid = "<%= @next.video.vid %>";
+  var navBarIndex = 0;
+  function navBarInfo(info) {
+      if (navBarIndex > 0) {
+        b = "#" + info + "_"+(navBarIndex - 1);
+        $(b).fadeOut("slow");
+      }
+      a = "#" + info + "_"+navBarIndex;
+      setTimeout(function(){$(a).fadeIn("slow");},2000);
+      navBarIndex = navBarIndex + 1;
+      if (info == "navdata") {
+        data_c = <%= @data.count+1 %>;
+      }
+      if (info == "centernavdata") {
+        data_c = <%= @entry.video.comment_count %>;
+      }
+      if (navBarIndex > data_c) {
+        navBarIndex = 0;
+      }
+  };
+
+  setInterval(function(){navBarInfo("navdata");}, 6000);
+  <% if current_user.option["show_comments"] == true %>
+  setInterval(function(){navBarInfo("centernavdata");}, 6000);
+  <% end %>
+  function myHover(name, back) {
+    c = "#"+name;
+    d = "#"+name+"_hover";
+    if (back == true) {
+      setTimeout(function(){$(c).addClass("hide");},300);
+      setTimeout(function(){$(d).removeClass("hide");},300);
+    } else {
+      setTimeout(function(){$(d).addClass("hide");},300);
+      setTimeout(function(){$(c).removeClass("hide");},300);
+    };
+  }
+
+  function activeHover(name) {
+    name_d = name + "_hover";
+    $("#"+name).hover(function(){myHover(name, true);}, function(){myHover(name, false);});
+    $("#"+name_d).hover(function(){myHover(name, true);}, function(){myHover(name, false);});
+  }
+  activeHover("next_info");
+  $('#modalSettings').on('hidden', function() {
+    toggleVideo();
+    });
+
+  function fetchUser() {
+    $("#fetch_image_inactive").addClass("hide");
+    $("#fetch_image_active").removeClass("hide");
+    $.post("/index.js?fetch=true", function(){
+     $("#fetch_image_active").addClass("hide");
+    $("#fetch_image_inactive").removeClass("hide");
+    });
+
 </script>

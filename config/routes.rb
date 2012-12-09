@@ -3,6 +3,7 @@ Socialtv::Application.routes.draw do
   match "/auth/:provider/callback" => "sessions#create"
   match "/next" => "entries#next"
   match "/signout" => "sessions#destroy"
+  match "/settings" => "users#settings"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
