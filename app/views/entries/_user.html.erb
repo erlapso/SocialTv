@@ -50,7 +50,7 @@
     } else {
       setTimeout(function(){$(d).addClass("hide");},300);
       setTimeout(function(){$(c).removeClass("hide");},300);
-    };
+    }
   }
 
   function activeHover(name) {
@@ -66,9 +66,9 @@
   function fetchUser() {
     $("#fetch_image_inactive").addClass("hide");
     $("#fetch_image_active").removeClass("hide");
-    $.post("/index.js?fetch=true", function(){
+    $.get("/index.js?fetch=true", function() {
      $("#fetch_image_active").addClass("hide");
-    $("#fetch_image_inactive").removeClass("hide");
+     $("#fetch_image_inactive").removeClass("hide");
     });
-
+  }
 </script>
