@@ -1,2 +1,2 @@
-<%= nav_comments(@entry.video.comments) %>
+<%= nav_comments(@entry.video.comments).html_safe if @entry.video.comments %>
 <li class="divider"></li>

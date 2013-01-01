@@ -7,7 +7,7 @@ class EntriesController < ApplicationController
       end 
       entries = current_user.entries.desc(:creation_time)
       entries = entries.where(:viewed => false) if current_user.option["hide_watched_videos"] == true
-      entries = entries.where(:"video.category".ne => "Music") if current_user.option["hide_watched_videos"] == true
+      entries = entries.where(:category.ne => "Music") if current_user.option["hide_watched_videos"] == true
       if params[:prev]
         viewed = current_user.entries.where(:vid => params[:prev]).first
         viewed.viewed = true
@@ -34,7 +34,9 @@ class EntriesController < ApplicationController
         redirect_to "/auth/#{r}/"
         end
       }
-      format.js { "success" }
+      format.js {
+        render :json => @enough
+      }
     end
   end
 

@@ -32,6 +32,7 @@ class SessionsController < ApplicationController
     tok = "#{auth["provider"]}_token".to_sym
     refresh_user = User.where(:"#{auth["provider"]}_uid" => auth["uid"]).first
     refresh_user[tok] = auth["credentials"]["token"]
+    refresh_user.last_login = DateTime.now
     refresh_user.save
     PROVIDERS.each do |provider|
       if not provider == auth["provider"]

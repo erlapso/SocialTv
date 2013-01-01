@@ -4,11 +4,12 @@
   <% end %>
   <% content_for :navbar_left do %>
     <%= render :partial => "current_info" %>
-  <% end %>
-  <% content_for :navbar_right do %>
     <% if current_user.option["show_comments"] == true %>
       <%= render :partial => "comments" %>
     <% end %>
+    </ul>
+  <% end %>
+  <% content_for :navbar_right do %>
     <%= render :partial => "next_info" %>
   <% end %>
   <%= render :partial => "settings" %>
@@ -17,30 +18,36 @@
 <script>
   var current_vid = "<%= @entry.video.vid %>";
   var next_vid = "<%= @next.video.vid %>";
-  var navBarIndex = 0;
+  var navBarIndex_navdata = 0;
+  var navBarIndex_centernavdata = 0;
   function navBarInfo(info) {
-      if (navBarIndex > 0) {
-        b = "#" + info + "_"+(navBarIndex - 1);
+    myIndex = "navBarIndex_"+info;
+      if (window[myIndex] > 0) {
+        b = "#" + info + "_"+(window[myIndex] - 1);
         $(b).fadeOut("slow");
       }
-      a = "#" + info + "_"+navBarIndex;
+      a = "#" + info + "_"+window[myIndex];
       setTimeout(function(){$(a).fadeIn("slow");},2000);
-      navBarIndex = navBarIndex + 1;
+      window[myIndex] = window[myIndex] + 1;
       if (info == "navdata") {
         data_c = <%= @data.count+1 %>;
       }
       if (info == "centernavdata") {
         data_c = <%= @entry.video.comment_count %>;
       }
-      if (navBarIndex > data_c) {
-        navBarIndex = 0;
+      if (window[myIndex] > data_c) {
+        window[myIndex] = 0;
       }
   };
-
+   <% if current_user.option["show_comments"] == true %>
+      setTimeout(function() {
+        $("#navdata_0").fadeOut("slow");
+        },8000);
+     setInterval(function(){navBarInfo("centernavdata");}, 6000);
+  <% else %>
   setInterval(function(){navBarInfo("navdata");}, 6000);
-  <% if current_user.option["show_comments"] == true %>
-  setInterval(function(){navBarInfo("centernavdata");}, 6000);
   <% end %>
+ 
   function myHover(name, back) {
     c = "#"+name;
     d = "#"+name+"_hover";
@@ -63,12 +70,18 @@
     toggleVideo();
     });
 
-  function fetchUser() {
-    $("#fetch_image_inactive").addClass("hide");
-    $("#fetch_image_active").removeClass("hide");
-    $.get("/index.js?fetch=true", function() {
+  function fetchUser(manual) {
+    if(typeof(manual)==='undefined') {
+      $("#fetch_image_inactive").addClass("hide");
+      $("#fetch_image_active").removeClass("hide");
+    }
+    $.get("/index.js?fetch=true", function(data) {
+     if(typeof(manual)==='undefined') {
      $("#fetch_image_active").addClass("hide");
      $("#fetch_image_inactive").removeClass("hide");
+     }
+     console.log(data);
     });
   }
+fetchUser(false);
 </script>

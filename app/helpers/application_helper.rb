@@ -14,10 +14,11 @@ module ApplicationHelper
 
   def nav_comments(arr)
     fin = []
-    arr.each_with_index do |comment|
-      st = nav_label(comment.author.name, comment.content, i, "centernavdata")
+    arr.each_with_index do |comment, i|
+      st = nav_label(comment["author"], truncate(comment["content"], :length => 70), i, "centernavdata")
       fin.push(st)
     end
+    fin = fin.join
     fin
   end
 

@@ -10,6 +10,7 @@ class Entry
   field :vid, :type => String
   field :created_time, :type => DateTime
   field :message, :type => String
+  field :category, :type => String
 
   field :source, :type => String
 

@@ -5,6 +5,8 @@ class User
   field :email, :type => String
   field :image, :type => String
   field :source, :type => String
+  field :first_login, :type => DateTime
+  field :last_login, :type => DateTime
 
   #FACEBOOK
   field :facebook_uid, :type => Integer

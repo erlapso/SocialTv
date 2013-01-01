@@ -1,5 +1,6 @@
 Socialtv::Application.routes.draw do
   root :to => "entries#index"
+  match "/index" => "entries#index"
   match "/auth/:provider/callback" => "sessions#create"
   match "/next" => "entries#next"
   match "/signout" => "sessions#destroy"

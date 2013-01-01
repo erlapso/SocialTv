@@ -32,6 +32,7 @@ class Video
     entry = Entry.find(entry_id)
     entry.vid = a_v.vid
     entry.video = a_v
+    entry.category = a_v.category
     if a_v.hidden == true
       entry.hidden = true
       entry.hidden_reason = "embed"
@@ -54,6 +55,7 @@ class Video
     entry = Entry.find(entry_id)
     entry.vid = vid
     entry.video = v
+    entry.category = v.category
     if v.hidden == true
       entry.hidden = true
       entry.hidden_reason = "embed"
@@ -103,12 +105,13 @@ class Video
     self.category = info.categories.first.label
     self.comment_count = info.comment_count
     self.published_at = DateTime.parse(info.published_at.to_s)
-    if self.comment_count > 100000000000000000
+    if self.comment_count > 10 
       yt = YouTubeIt::Client.new(:dev_key => YT[:dev_key]) if not yt
       cc = yt.comments(self.vid)
       comments = []
-      cc.each do |comment|
-        comments.push(comment)
+      cc.each_with_index do |comment, i| #fetch just the last 10 comments
+        n_comment = { :author => comment.author.name, :content => comment.content, :published => comment.published }
+        comments.push(n_comment)
       end
       self.comments = comments
     end

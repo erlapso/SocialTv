@@ -39,7 +39,7 @@ playerVars: {
   //the player should play for six seconds and then stop.
   function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.ENDED) {
-      setTimeout(nextVideo, 3000); 
+      setTimeout(nextVideo, 500); 
     }
   }
  
@@ -70,7 +70,12 @@ function hideSettings() {
     if (seconds == <%= @entry.video.duration %>) {
       $("#video_title").fadeIn(1000);
     }
-    secs = "<b id='time_in_words'>In "+seconds+" seconds </b>";
+    if (seconds > 120) {
+      minutes = Math.round(seconds / 60);
+      secs = "<b id='time_in_words'>In "+minutes+" minutes</b>";
+    } else {
+      secs = "<b id='time_in_words'>In "+seconds+" seconds </b>";
+    }
     $('#time_in_words').replaceWith(secs);
     if (videoSwitch == 0) {
       seconds = seconds - 1;
