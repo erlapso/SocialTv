@@ -27,6 +27,8 @@ class EntriesController < ApplicationController
       else
         @enough = false
       end
+    else
+      redirect_to welcome_path
     end
     respond_to do |format|
       format.html {
@@ -38,6 +40,13 @@ class EntriesController < ApplicationController
         render :json => @enough
       }
     end
+  end
+
+  def loading
+
+  end
+
+  def welcome
   end
 
 end

@@ -83,12 +83,4 @@ function hideSettings() {
   }
   setInterval(function(){timeInWords();}, 1000);
 
-  function applySettings(opt) {
-    $.post("/settings.js", { option: opt }, function(data) {
-     name = "#setting_" + option + "_" + data["value"];
-     $(name).addClass("hide");
-     other = "#setting_" + option + "_" + data["opposite"];
-     $(other).removeClass("hide");
-        }
-        );}
 </script>

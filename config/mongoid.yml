@@ -3,7 +3,7 @@ development:
     default:
       hosts:
         - 127.0.0.1:27017
-      database: socialtv_development
+      database: socialtv_nice_development
       pool_size: 25
 test:
   host: localhost

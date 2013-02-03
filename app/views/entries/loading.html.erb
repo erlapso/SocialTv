@@ -1,0 +1,29 @@
+<div class="container">
+  <br>
+  <br>
+  <div class="progress">
+    <div class="bar" style="width: 1%">
+    </div>
+  </div>
+  <div>
+    <p style="text-align: center;">
+      <br>
+      Loading...
+    </p>
+  </div>
+</div>
+<%= content_for :after_body do %>
+  <script>
+    var w = 1;
+    setInterval(function() {
+    if (w < 90) {
+     w = w + 5;
+    }
+     $('.bar').attr("style","width: "+w+"%");
+    },90);
+    $.get("/?fetch=true", function(){ 
+      $('.bar').attr("style","width: 100%");
+      window.location = "/";
+    });
+  </script>
+<% end %>

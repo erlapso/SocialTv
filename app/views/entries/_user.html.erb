@@ -84,4 +84,15 @@
     });
   }
 fetchUser(false);
+  $('.modalSettings').click(function() {
+    console.log("ag");
+    opt = $(this).data("option");
+    a = $(this).find('.hide');
+    b = $(this).find('.shown');
+    a.removeClass('hide').addClass('shown');
+    b.removeClass('shown').addClass('hide');
+    $.post("/settings.js", { option: opt });
+  });
+
+
 </script>

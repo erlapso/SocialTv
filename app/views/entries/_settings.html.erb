@@ -5,10 +5,14 @@
 <div class="modal-body">
 <% current_user.option.each do |option| %>
   <% opposite = current_user.option["#{option}"] == true %>
-  <p "class="modalSettings"><img id="setting_<%= option %>_<%= current_user.option["#{option}"].to_s %>" src="/images/checked_<%= current_user.option["#{option}"].to_s %>.png" onClick="applySettings('<%= option[0] %>');"> <img class="hide" id="setting_<%= option %>_<%= current_user.option["#{option}"].to_s %>" src="/images/checked_<%= opposite.to_s %>.png" onClick="applySettings('<%= option[0] %>');"><%= option[0].humanize %></p>
+  <div class="modalSettings" data-option="<%= option[0] %>">
+    <i id="setting_<%= option[0] %>_<%= option[1].to_s %>" class="<%= option[1] == true ? "icon-thumbs-up shown" : "icon-thumbs-up hide" %>"></i>
+    <i id="setting_<%= option[0] %>_<%= option[1].to_s %>" class="<%= option[1] == true ? "icon-thumbs-down hide" : "icon-thumbs-down shown" %>"></i>
+    <%= option[0].humanize %>
+  </div>
 <% end %>
 </div>
 <div class="modal-footer">
-<p onClick="hideSettings();">Done</a>
+<button class="btn btn-info" onClick="hideSettings();">Done</a>
 </div>
 </div>
